@@ -1,16 +1,23 @@
 resource_manifest_version "44febabe-d386-4d18-afbe-5e627f4af937"
 
+author 'Pitu7944'
+description 'Pitu7944\' MultiJob '
+version '1.0.0'
 
+server_scripts {
+    'Config.lua',
+    '@mysql-async/lib/MySQL.lua',
+    'server/functions.lua',
+    'server/database.lua',
+    'server/server.lua',
+    'server/callbacks.lua'
+}
 
-client_scrips {
+client_scripts {
     'client/functions.lua',
     'client/client.lua',
 }
-server_scrips {
-    'Config.lua',
-    'server/functions.lua',
-    'server/server.lua',
-}
+
 --[[
     ░░░░░░░░░░░░░▄▄▀▀▀▀▀▀▄▄
     ░░░░░░░░░░▄▄▀▄▄▄█████▄▄▀▄
