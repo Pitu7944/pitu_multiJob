@@ -6,6 +6,7 @@ version '1.0.0'
 
 server_scripts {
     'Config.lua',
+    'server/globals.lua',
     '@mysql-async/lib/MySQL.lua',
     'server/functions.lua',
     'server/database.lua',
@@ -14,6 +15,7 @@ server_scripts {
 }
 
 client_scripts {
+    'Config.lua',
     'client/functions.lua',
     'client/client.lua',
 }

@@ -6,6 +6,7 @@
 any issues? Dm me on discord (Pitu7944#2711)
 ]]
 Config = {}
+Config.clientSyncTime = 5 -- client sync time in seconds
 Config.Jobs = {
     {
         name = 'testjob',
@@ -16,6 +17,13 @@ Config.Jobs = {
                 pos = {x = 123, y = 456, z = 789},
                 label = 'testBlip'
             }
+        },
+        grades = {
+            { grade = 1, label = 'rekrut', isboss = false },
+            { grade = 2, label = 'g2', isboss = false },
+            { grade = 3, label = 'g3', isboss = false },
+            { grade = 4, label = 'g4', isboss = false },
+            { grade = 5, label = 'Boss', isboss = true },
         },
         zones = {
             changerooms = {
@@ -38,8 +46,12 @@ Config.Jobs = {
             garage = {
                 label = 'Press ~g~[E]~w~ to open Garage',
                 enabled = true,
-                pos = {x = 123, y = 456, z = 789}
+                pos = {x = 123, y = 456, z = 789},
+                vehicles = {
+                    "zentorno"
+                }
             }
-        }
+        },
+        data = {}
     }
 }
