@@ -14,8 +14,29 @@ Citizen.CreateThread(function()
     end
 end)
 
+function conf_GetJobData(jobname)
+    for i, ijob in pairs(Config.Jobs) do
+        if ijob.name == jobname then
+            return ijob
+        end
+    end
+    return nil
+end
+
+function conf_getWeapon(jobdata, weapon)
+    print(json.encode(jobdata))
+    for i, iweapon in pairs(jobdata.zones.armory.weapons) do
+        if iweapon.weaponName == weapon then
+            return iweapon
+        end
+    end
+    return nil
+end
+
 function dprint(txt)
-    print("^4[^2"..GetCurrentResourceName().."^4] ^3"..tostring(txt)..'^0')
+    if Config.DebugEnabled == true then
+        print("^4[^2"..GetCurrentResourceName().."^4] ^3"..tostring(txt)..'^0')
+    end
 end
 
 

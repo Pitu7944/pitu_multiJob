@@ -43,7 +43,7 @@ Citizen.CreateThread(function() -- sync thread
     while ESX == nil do Wait(0) end
     while true do
         ESX.TriggerServerCallback('pitu_multijob:db:getPlayerJob', function(jobData)
-            --print(json.encode(jobData))
+            dprint(json.encode(jobData))
             playerJob = jobData
         end, GetPlayerServerId(PlayerId()))
         Wait(Config.clientSyncTime*1000)
@@ -53,22 +53,22 @@ end)
 Citizen.CreateThread(function() -- register jobs from config
     while ESX == nil or playerJob == nil do Wait(0) end
     for _, configjob in pairs(Config.Jobs) do
-        --print(playerJob.job)
+        dprint(playerJob.job)
         if playerJob.job == configjob.name then
             Citizen.CreateThread(function() -- draw job main blip
                 for _,blip in pairs(configjob.blips) do
-                    --print(tostring(blip))
-                    --print(json.encode(blip))
-                    --print("drawing blip")
-                    --print(blip.label)
+                    dprint(tostring(blip))
+                    dprint(json.encode(blip))
+                    dprint("drawing blip")
+                    dprint(blip.label)
                     addBlip(blip.label, blip.id, blip.color, blip.pos.x, blip.pos.y, blip.pos.z)
                 end
             end)
             Citizen.CreateThread(function() -- marker thread
-                --print('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
+                dprint('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
                 RegisterNetEvent('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
                 AddEventHandler('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker', function(zone)
-                    --print(zone)
+                    dprint(zone)
                     if zone == 'storage' then
                         CurrentAction     = 'inStorageZone' -- current action
                         CurrentActionMsg  = configjob.zones.storage.label --  message displayed in marker
@@ -121,24 +121,24 @@ Citizen.CreateThread(function() -- register jobs from config
                         if isInMarker and not hasAlreadyEnteredMarker then
                             hasAlreadyEnteredMarker = true
                             lastZone                = currentZone
-                            --print('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
-                            --print(currentZone)
+                            dprint('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
+                            dprint(currentZone)
                             TriggerEvent('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker', currentZone)
                         end
             
                         if not isInMarker and hasAlreadyEnteredMarker then
                             hasAlreadyEnteredMarker = false
-                            --print('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
-                            --print(currentZone)
+                            dprint('pitu_multijob:zones:'..playerJob.job..':hasEnteredMarker')
+                            dprint(currentZone)
                             TriggerEvent('pitu_multijob:zones:'..playerJob.job..':hasExitedMarker', lastZone)
                         end
                         local coords = GetEntityCoords(GetPlayerPed(-1))
-                        --print(coords)
+                        dprint(coords)
                         for k,v in pairs(configjob.zones) do
-                            --print(json.encode(v))
-                            --print("test")
+                            dprint(json.encode(v))
+                            dprint("test")
                             if(GetDistanceBetweenCoords(coords, v.pos.x, v.pos.y, v.pos.z, true) < DrawDistance) then
-                                --print("marker")
+                                dprint("marker")
                                 DrawMarker(MarkerType, v.pos.x, v.pos.y, v.pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, ZoneSize.x, ZoneSize.y, ZoneSize.z, MarkerColor.r, MarkerColor.g, MarkerColor.b, 100, false, true, 2, false, false, false, false)
                             end
                         end
@@ -155,11 +155,12 @@ Citizen.CreateThread(function() -- register jobs from config
                         if CurrentAction ~= nil then
                             ESX.ShowHelpNotification(CurrentActionMsg)
                             if IsControlJustReleased(0, Keys['E']) then
-                                print(CurrentAction)
+                                dprint(CurrentAction)
                                 if CurrentAction == 'inWardrobeZone' then openMenu2() end
                                 if CurrentAction == 'inStorageZone' then openMenu() end
                                 if CurrentAction == 'inGarageZone' then carSpawnerMenu(configjob.zones.garage) end
                                 if CurrentAction == 'inDeleterZone' then deletevehiclein() end
+                                if CurrentAction == 'inArmoryZone' then openArmoryMenu() end
                                 CurrentAction = nil
                             end
                         else
@@ -215,11 +216,121 @@ function deletevehiclein()
     end
 end
 
+
+function OpenGetBMStocksMenu()
+	blackmoney = 0
+	ESX.TriggerServerCallback('pitu_multijob:db:getBlackMoneyStock', function(cb, blackmoneyamount)
+		dprint(cb)
+		dprint(tostring(blackmoneyamount))
+		blackmoney = blackmoneyamount
+		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
+			title    = 'Enter Amount ( avaible: '..tostring(blackmoneyamount)..' $)',
+			align    = 'bottom-right',
+		}, function(data2, menu2)
+			dprint(data2.value)
+			TriggerServerEvent('pitu_multijob:db:setBlackMoneyStock', tonumber(data2.value)*-1, false)
+			Wait(100)
+			menu2.close()
+			--OpenArmoryMenu()
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+	end)
+	
+end
+
+function OpenPutBMStocksMenu()
+	blackmoney = 0
+	ESX.TriggerServerCallback('pitu_multijob:db:getPlayerBlackMoney', function(cb, blackmoneyamount)
+		blackmoney = blackmoneyamount
+		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
+			title    = 'Enter Amount ( avaible: '..tostring(blackmoneyamount)..' $)',
+			align    = 'bottom-right',
+		}, function(data2, menu2)
+			dprint(data2.value)
+			TriggerServerEvent('pitu_multijob:db:setBlackMoneyStock', tonumber(data2.value), true)
+			Wait(100)
+			menu2.close()
+			--OpenArmoryMenu()
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+	end)
+end
+
+function OpenGetCashStocksMenu()
+	money = 0
+	ESX.TriggerServerCallback('pitu_multijob:db:getMoneyStock', function(cb, moneyamount)
+		dprint(cb)
+		dprint(tostring(moneyamount))
+		money = moneyamount
+		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
+			title    = 'Enter Amount ( avaible: '..tostring(moneyamount)..' $)',
+			align    = 'bottom-right',
+		}, function(data2, menu2)
+			print(data2.value)
+			TriggerServerEvent('pitu_multijob:db:setMoneyStock', tonumber(data2.value)*-1, false)
+			Wait(100)
+			menu2.close()
+			--OpenArmoryMenu()
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+	end)
+	
+end
+
+function openArmoryMenu()
+    --pitu_multijob:shop:buyWeapon
+    ESX.TriggerServerCallback('pitu_multijob:conf:getJobWeaponStore', function(cb, conf_weapons)
+        local elements = {}
+        for i, iweapon in pairs(conf_weapons) do 
+            dprint(json.encode(iweapon))
+            local l_label = iweapon.label.." - "..iweapon.price.. "$"
+            table.insert(elements, {label = l_label, value = iweapon.weaponName})
+            ESX.UI.Menu.CloseAll()
+            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
+                title    = 'Armory',
+                align    = 'bottom-right',
+                elements = elements
+            }, function(data, menu)
+                TriggerServerEvent('pitu_multijob:shop:buyWeapon', data.current.value)
+                menu.close()
+            end, function(data, menu)
+                menu.close()
+            end)
+        end
+    end)
+end
+function OpenPutCashStocksMenu()
+	money = 0
+	ESX.TriggerServerCallback('pitu_multijob:db:getPlayerMoney', function(cb, moneyamount)
+		money = moneyamount
+		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
+			title    = 'Enter Amount ( avaible: '..tostring(moneyamount)..' $)',
+			align    = 'bottom-right',
+		}, function(data2, menu2)
+			print(data2.value)
+			TriggerServerEvent('pitu_multijob:db:setMoneyStock', tonumber(data2.value), true)
+			Wait(100)
+			menu2.close()
+			--OpenArmoryMenu()
+		end, function(data2, menu2)
+			menu2.close()
+		end)
+	end)
+end
+
+
 function openMenu()
     local elements = {
         {label = 'Item Deposit', value = 'deposit'},
         {label = 'Item Withdraw', value = 'withdraw'},
-	}
+    }
+    table.insert(elements, {label = "Deposit Black Money", value = "put_bmstock"})
+    table.insert(elements, {label = "Deposit Money", value = "put_mstock"})
+    table.insert(elements, {label = "Withdraw Black Money", value = "get_bmstock"})
+	table.insert(elements, {label = "Withdraw Money", value = "get_mstock"})
 	ESX.UI.Menu.CloseAll()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
 		title    = 'Storage Room',
@@ -230,6 +341,14 @@ function openMenu()
             depositMenu()
         elseif data.current.value == 'withdraw' then
             withdrawMenu()
+        elseif data.current.value == "get_bmstock" then
+            OpenGetBMStocksMenu()
+        elseif data.current.value == "put_bmstock" then
+            OpenPutBMStocksMenu()
+        elseif data.current.value == "get_mstock" then
+            OpenGetCashStocksMenu()
+        elseif data.current.value == "put_mstock" then
+            OpenPutCashStocksMenu()
         end
 	end, function(data, menu)
 		menu.close()
@@ -305,13 +424,13 @@ function carSpawnerMenu(garage)
 		align    = 'bottom-right',
 		elements = elements
     }, function(data, menu)
-        print("yoos")
-        print(json.encode(garage))
+        dprint("yoos")
+        dprint(json.encode(garage))
         spawnCar(garage.spawner.x, garage.spawner.y, garage.spawner.z, garage.spawner.h, 'zentorno')
         menu.close()
-        --print(x)
-        --print(y)
-        --print(z)
+        dprint(x)
+        dprint(y)
+        dprint(z)
         --local veh = data.current.value
         --if veh ~= nil then
         --    print('xd')
@@ -334,7 +453,7 @@ function spawnCar(x, y, z, h, model)
         while not HasModelLoaded(vehiclehash) do
             waiting = waiting + 100
             Citizen.Wait(100)
-            --print("waiting")
+            dprint("waiting")
             if waiting > 5000 then
                 break
             end
@@ -439,6 +558,14 @@ function clothesMenu(mode)
         end)
     end
 end
+
+RegisterNetEvent('pitu_multijob:functions:notify')
+AddEventHandler('pitu_multijob:functions:notify', function(message)
+    local msg = message 
+    SetNotificationTextEntry('STRING')
+    AddTextComponentString(message)
+    DrawNotification(false, false)
+end)
 -- debug functions:
 
 

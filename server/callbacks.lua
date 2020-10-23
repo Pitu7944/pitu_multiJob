@@ -26,14 +26,14 @@ Citizen.CreateThread(function() -- main event loop
         end)
         ESX_CB.RegisterServerCallback('pitu_multijob:db:getJobStorage', function(source, cb)
             dprint("cb2 Triggered!")
-            --print(source)
+            dprint(source)
             local job = db_getJob(source).job
-            --print("Callback - job: "..job)
+            dprint("Callback - job: "..job)
             local storage = db_getAllFromStorage(job)
             cb(true, storage)
         end)
         ESX_CB.RegisterServerCallback('pitu_multijob:db:getPlayerStorage', function(source, cb)
-            --print(source)
+            dprint(source)
             local xPlayer = ESX_CB.GetPlayerFromId(source)
             local inventory = xPlayer.getInventory(true)
             local items = {}
@@ -42,8 +42,38 @@ Citizen.CreateThread(function() -- main event loop
                     table.insert(items, {label = item.label, item = item.name, amount = item.count})
                 end
             end
-            --print(json.encode(items))
+            dprint(json.encode(items))
             cb(true, items)
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getBlackMoneyStock', function(source, cb)
+            dprint(source)
+            blackmoney = db_getMoneyStock(db_getJob(source).job, 'black')
+            dprint(tostring(blackmoney))
+            if blackmoney == nil then blackmoney = 0 end
+            cb(true, blackmoney)
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getMoneyStock', function(source, cb)
+            dprint(source)
+            cash = db_getMoneyStock(db_getJob(source).job, 'cash')
+            if cash == nil then cash = 0 end
+            cb(true, cash)
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getPlayerBlackMoney', function(source, cb)
+            local _source = source
+            local xPlayer = ESX_CB.GetPlayerFromId(_source)
+            cb(true, xPlayer.getAccount('black_money').money)
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getPlayerMoney', function(source, cb)
+            local _source = source
+            local xPlayer = ESX_CB.GetPlayerFromId(_source)
+            cb(true, xPlayer.getMoney())
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:conf:getJobWeaponStore', function(source, cb)
+            local _source = source
+            local xPlayer = ESX_CB.GetPlayerFromId(_source)
+            local jobname = db_getJob(source).job
+            local jobdata = conf_GetJobData(jobname)
+            cb(true, jobdata.zones.armory.weapons)
         end)
         dprint('[CB] Loaded')
     end)

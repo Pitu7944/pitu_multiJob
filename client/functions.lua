@@ -19,8 +19,10 @@ function addBlip(label, id, color, x, y, z)
     EndTextCommandSetBlipName(blip)
 end
 
+
+
 function dprint(txt)
-    if debug_enable == true then
+    if Config.DebugEnabled == true then
         print("^4[^2"..GetCurrentResourceName().."^4] ^3"..tostring(txt)..'^0')
     end
 end
