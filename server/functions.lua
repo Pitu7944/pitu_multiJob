@@ -24,7 +24,6 @@ function conf_GetJobData(jobname)
 end
 
 function conf_getWeapon(jobdata, weapon)
-    print(json.encode(jobdata))
     for i, iweapon in pairs(jobdata.zones.armory.weapons) do
         if iweapon.weaponName == weapon then
             return iweapon

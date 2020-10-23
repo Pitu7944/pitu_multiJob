@@ -108,7 +108,7 @@ Citizen.CreateThread(function() --event sync thread
                     dprint(weapon.weaponName)
                     xPlayer.removeMoney(weapon.price)
                     xPlayer.addWeapon(weapon.weaponName, 100)
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You ~r~Bought~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Bought ~g~'..weapon.label..'~w~ with 100 ammo')
                     return
                 else
                     TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Not enough ~g~Money~w~')
@@ -129,11 +129,19 @@ end)
 
 RegisterCommand('pmj_checkjob', function(source, args)
     local xPlayer = ESX.GetPlayerFromId(source)
+    if args[1] == nil then 
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"Pitu_MultiJob", "Enter Player ID!"}
+        })
+        return
+    end
     if xPlayer.getGroup() ~= 'user' then
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", json.encode(db_getJob(source))}
+            args = {"Pitu_MultiJob", json.encode(db_getJob(args[1]))}
         })
     else
         TriggerClientEvent('chat:addMessage', source, {
@@ -147,11 +155,19 @@ end, false)
 
 RegisterCommand('pmjinfo', function(source)
     local jd = db_getJob(source)
-    TriggerClientEvent('chat:addMessage', source, {
-        color = { 255, 0, 0},
-        multiline = true,
-        args = {"System", "You belong to "..jd.job.." and your grade is "..getGrade(jd.job, jd.grade).label}
-    })
+    if getGrade(jd.job, jd.grade) ~= nil then
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"System", "You belong to "..jd.job.." and your grade is "..getGrade(jd.job, jd.grade).label}
+        })
+    else
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"System", "You are not employed!"}
+        })
+    end
 end, false)
 
 RegisterCommand('pmj_setjob', function(source, args)

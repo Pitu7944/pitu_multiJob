@@ -175,7 +175,7 @@ function db_getFromStorage(jobname, item, amount)
         local l_amount = l_item.amount + amount
         if l_amount < 0 then return false end
         MySQL.Async.execute('UPDATE pitu_multijob_storage SET item = @item, amount = @amount WHERE jobname = @jobname AND item = @item', { ['jobname'] = jobname, ['item'] = item, ['amount'] = l_amount}, function(affectedRows)
-            print(affectedRows)
+            dprint(affectedRows)
         end)
         return amount
     end

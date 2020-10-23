@@ -37,7 +37,10 @@ Citizen.CreateThread(function()
         TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
         Citizen.Wait(0)
     end
+    
 end)
+
+
 
 Citizen.CreateThread(function() -- sync thread
     while ESX == nil do Wait(0) end
@@ -48,6 +51,18 @@ Citizen.CreateThread(function() -- sync thread
         end, GetPlayerServerId(PlayerId()))
         Wait(Config.clientSyncTime*1000)
     end
+end)
+
+Citizen.CreateThread(function()--command help show
+    TriggerEvent('chat:addSuggestion', '/pmj_setjob', 'Pitu_multiJob - SetJob (ADMIN)', {
+        { name="ID", help="Player ID" },
+        { name="Jobname", help="Job Name" },
+        { name="Jobgrade", help="Job Grade" },
+    })
+    TriggerEvent('chat:addSuggestion', '/pmj_checkjob', 'Pitu_multiJob - Check Player Job (ADMIN)', {
+        { name="ID", help="Player ID" }
+    })
+    TriggerEvent('chat:addSuggestion', '/pmjinfo', 'Pitu_multiJob - Check Self Job')
 end)
 
 Citizen.CreateThread(function() -- register jobs from config
