@@ -24,6 +24,27 @@ Citizen.CreateThread(function() -- main event loop
             dprint("cb Triggered!")
             cb(db_getJob(source))
         end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getJobStorage', function(source, cb)
+            dprint("cb2 Triggered!")
+            --print(source)
+            local job = db_getJob(source).job
+            --print("Callback - job: "..job)
+            local storage = db_getAllFromStorage(job)
+            cb(true, storage)
+        end)
+        ESX_CB.RegisterServerCallback('pitu_multijob:db:getPlayerStorage', function(source, cb)
+            --print(source)
+            local xPlayer = ESX_CB.GetPlayerFromId(source)
+            local inventory = xPlayer.getInventory(true)
+            local items = {}
+            for _, item in pairs(inventory) do 
+                if item.count > 0 then
+                    table.insert(items, {label = item.label, item = item.name, amount = item.count})
+                end
+            end
+            --print(json.encode(items))
+            cb(true, items)
+        end)
         dprint('[CB] Loaded')
     end)
 end)

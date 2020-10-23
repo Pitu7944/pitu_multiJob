@@ -29,27 +29,34 @@ Config.Jobs = {
             changerooms = {
                 label = 'Press ~g~[E]~w~ to open Changing Room',
                 enabled = true,
-                pos = {x = 123, y = 456, z = 789}
+                pos = {x = 409.02, y = -980.94, z = 28.32}
             },
             armory = {
                 label = 'Press ~g~[E]~w~ to open Armory',
                 enabled = true,
-                pos = {x = 123, y = 456, z = 789},
-                webhook = {enabled = false, link = ''}
+                pos = {x = 408.88, y = -985.36, z = 28.28},
+                webhook = {enabled = false, link = ''},
             },
             storage = {
                 label = 'Press ~g~[E]~w~ to open Storage',
                 enabled = true,
-                pos = {x = 123, y = 456, z = 789},
+                pos = {x = 408.8, y = -989.24, z = 28.28},
                 webhook = {enabled = false, link = ''}
             },
             garage = {
                 label = 'Press ~g~[E]~w~ to open Garage',
                 enabled = true,
-                pos = {x = 123, y = 456, z = 789},
+                pos = {x = 408.0, y = -995.36, z = 28.28},
                 vehicles = {
-                    "zentorno"
-                }
+                    {spawnName = 'zentorno', label = 'Zentorno'}
+                },
+                spawner = {
+                    x = 402.4,  y = -1001.72,  z = 29.36, h = 180.00
+                },
+            },
+            deleter = {
+                label = 'Press ~g~[E]~w~ to hide Vehicle',
+                pos = {x = 402.4,  y = -1001.72,  z = 28.46}
             }
         },
         data = {}
