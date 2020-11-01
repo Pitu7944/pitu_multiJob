@@ -60,6 +60,46 @@ function db_getJob(source)
     end
 end
 
+function db_setjobIdent(steamHex, jobname, jobgrade)
+    local steamhex = steamHex
+    dprint(steamhex)
+    if steamhex ~= nil then
+        dprint('pass')
+        local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_users WHERE identifier = "'..steamhex..'"')
+        if result[1] ~= nil then
+            dprint(json.encode(result[1]))
+            dprint("Updating HEX: "..steamhex.." To: "..jobname.." with Grade: "..jobgrade)
+            MySQL.Sync.execute('UPDATE pitu_multijob_users SET jobname = @jobname, jobgrade = @jobgrade WHERE identifier = "'..steamhex..'"', { ['jobname'] = jobname, ['jobgrade'] = jobgrade })
+            return "Updating HEX: "..steamhex.."  To: "..jobname.." with Grade: "..jobgrade
+        else
+            dprint("Setting HEX: "..steamhex.." To: "..jobname.." with Grade: "..jobgrade)
+            MySQL.Sync.execute('INSERT INTO pitu_multijob_users (jobname, jobgrade, identifier) VALUES (@jobname, @jobgrade, @identifier)', { ['jobname'] = jobname, ['jobgrade'] = jobgrade, ['identifier'] = steamhex}, function(affectedRows)
+                dprint(affectedRows)
+            end)
+            return "Setting HEX: "..steamhex.." To: "..jobname.." with Grade: "..jobgrade
+        end
+    else
+        dprint("fail")
+        return nil
+    end
+end
+
+function db_removePlayer(steamHex)
+    local steamhex = steamHex
+    local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_users WHERE identifier = "'..steamhex..'"')
+    if result[1] ~= nil then
+        print("removing!")
+        MySQL.Sync.execute('DELETE FROM pitu_multijob_users WHERE identifier =  @identifier', { ['identifier'] = steamHex})
+        return true
+    end
+    return false
+end
+
+function db_getAllJobMembers(jobname)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_users WHERE jobname = "'..jobname..'"')
+    if result ~= nil then return result else return false end
+end
+
 function getGrade(jobname, grade)
     for _, ijob in pairs(Config.Jobs) do
         if ijob.name == jobname then

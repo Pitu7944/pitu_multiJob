@@ -7,7 +7,6 @@ version '1.0.0'
 
 server_scripts {
     '@es_extended/locale.lua',
-	'locales/pl.lua',
     'Config.lua',
     'server/globals.lua',
     '@mysql-async/lib/MySQL.lua',
@@ -19,7 +18,6 @@ server_scripts {
 
 client_scripts {
     '@es_extended/locale.lua',
-	'locales/pl.lua',
     'Config.lua',
     'client/functions.lua',
     'client/client.lua',
@@ -29,24 +27,15 @@ client_scripts {
 -- uncomment/comment to the addons that you have! --
 
 server_scripts {
-	'addons/locks/config.lua',
-	'addons/locks/server.lua'
+    'addons/locks/server.lua',
+    'addons/handcuffs/server.lua'
 }
 
 client_scripts {
-	'addons/locks/config.lua',
-	'addons/locks/client.lua'
+    'addons/locks/client.lua',
+    'addons/handcuffs/client.lua'
 }
 
-server_scripts {
-	'addons/handcuffs/config.lua',
-	'addons/handcuffs/server.lua'
-}
-
-client_scripts {
-	'addons/handcuffs/config.lua',
-	'addons/handcuffs/client.lua'
-}
 
 dependency 'es_extended'
 --[[

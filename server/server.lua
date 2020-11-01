@@ -21,7 +21,7 @@ RegisterNetEvent('pitu_multijob:db:getItem')
 RegisterNetEvent('pitu_multijob:db:setBlackMoneyStock')
 RegisterNetEvent('pitu_multijob:db:setMoneyStock')
 RegisterNetEvent('pitu_multijob:shop:buyWeapon')
-RegisterServerEvent('pitu_multijob:functions_s:notify')
+RegisterNetEvent('pitu_multijob:functions_s:notify')
 -- end event registry --
 
 

@@ -109,6 +109,11 @@ Citizen.CreateThread(function() -- register jobs from config
                         CurrentActionMsg  = configjob.zones.deleter.label --  message displayed in marker
                         CurrentActionData = {}
                         isInZone = true
+                    elseif zone == 'boss' and playerJob.grade >= configjob.zones.boss.rq_grade then
+                        CurrentAction     = 'inBossActionsZone' -- current action
+                        CurrentActionMsg  = configjob.zones.boss.label --  message displayed in marker
+                        CurrentActionData = {}
+                        isInZone = true
                     end
                 end)
                 RegisterNetEvent('pitu_multijob:zones:'..playerJob.job..':hasExitedMarker')
@@ -152,8 +157,11 @@ Citizen.CreateThread(function() -- register jobs from config
                         for k,v in pairs(configjob.zones) do
                             dprint(json.encode(v))
                             dprint("test")
-                            if(GetDistanceBetweenCoords(coords, v.pos.x, v.pos.y, v.pos.z, true) < DrawDistance) then
+                            if(GetDistanceBetweenCoords(coords, v.pos.x, v.pos.y, v.pos.z, true) < DrawDistance) and k ~= 'boss' then
                                 dprint("marker")
+                                DrawMarker(MarkerType, v.pos.x, v.pos.y, v.pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, ZoneSize.x, ZoneSize.y, ZoneSize.z, MarkerColor.r, MarkerColor.g, MarkerColor.b, 100, false, true, 2, false, false, false, false)
+                            elseif(GetDistanceBetweenCoords(coords, v.pos.x, v.pos.y, v.pos.z, true) < DrawDistance) and k == 'boss' and playerJob.grade >= configjob.zones.boss.rq_grade then
+                                dprint("marker_boss")
                                 DrawMarker(MarkerType, v.pos.x, v.pos.y, v.pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, ZoneSize.x, ZoneSize.y, ZoneSize.z, MarkerColor.r, MarkerColor.g, MarkerColor.b, 100, false, true, 2, false, false, false, false)
                             end
                         end
@@ -176,6 +184,7 @@ Citizen.CreateThread(function() -- register jobs from config
                                 if CurrentAction == 'inGarageZone' then carSpawnerMenu(configjob.zones.garage) end
                                 if CurrentAction == 'inDeleterZone' then deletevehiclein() end
                                 if CurrentAction == 'inArmoryZone' then openArmoryMenu() end
+                                if CurrentAction == 'inBossActionsZone' then OpenbossMenu() end
                                 CurrentAction = nil
                             end
                         else
@@ -231,6 +240,113 @@ function deletevehiclein()
     end
 end
 
+function OpenbossMenu()
+    print("opening boss menu")
+    ESX.UI.Menu.CloseAll()
+    local elements = {
+        {label = 'Awansuj/Zwolnij', value = 'awans/zwolnij'},
+        {label = 'Zatrudnij', value = 'zatrudnij'}
+    }
+    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_boss_actions', {
+        title    = 'Menu Szefa',
+        align    = 'bottom-right',
+        elements = elements
+    }, function(data, menu)
+        if data.current.value == 'awans/zwolnij' then
+            OpenEmployeeList()
+        elseif data.current.value == 'zatrudnij' then
+            OpenHireMenu()
+        end
+        menu.close()
+    end, function(data, menu)
+        menu.close()
+    end)
+end
+
+function OpenHireMenu()
+    ESX.TriggerServerCallback('pitu_multijob:utils:getPlayers', function(players)
+        print(json.encode(players))
+        local elements = {
+			head = {"Gracz", 'Czynności'},
+			rows = {}
+        }
+        for i, player in pairs(players) do
+			table.insert(elements.rows, {
+				data = player,
+				cols = {
+					player.name,
+					'{{' .. "Zatrudnij" .. '|hire}}'
+				}
+			})
+		end
+
+		ESX.UI.Menu.Open('list', GetCurrentResourceName(), 'hire_list', elements, function(data, menu)
+			local player = data.data
+            if data.value == 'promote' then
+                print(json.encode(player))
+                ESX.ShowNotification('~g~Zatrudniłeś~w~: ~b~'.. player.name.."~w~")
+                ESX.TriggerServerCallback('pitu_mulitjob:db:setjobSteamID', function(status)
+                    dprint(tostring(status))
+                    menu.close()
+                    OpenHireMenu()
+                end, {steamID = player.identifier, job = playerJob, grade = 1})
+			end
+		end, function(data, menu)
+			menu.close()
+		end)
+    end, '')
+end
+
+function OpenEmployeeList()
+    ESX.TriggerServerCallback('pitu_multijob:bmenu:getjobMembers', function(cbs, jobMembers)
+        local steamIDS = {}
+
+        for i, ijob in pairs(jobMembers) do
+            table.insert(steamIDS, ijob.identifier)
+        end
+        local employees = getEmployeeData(jobMembers, getRP_Names(steamIDS))
+        local elements = {
+			head = {"Członek", 'Grade', 'Czynności'},
+			rows = {}
+        }
+        for i=1, #employees, 1 do
+			local gradeLabel = employees[i].gradelabel
+
+			table.insert(elements.rows, {
+				data = employees[i],
+				cols = {
+					employees[i].name,
+					gradeLabel,
+					'{{' .. "Awansuj" .. '|promote}} {{' .. "Zwolnij" .. '|fire}}'
+				}
+			})
+		end
+
+		ESX.UI.Menu.Open('list', GetCurrentResourceName(), 'employee_list', elements, function(data, menu)
+			local employee = data.data
+            if data.value == 'promote' then
+                print(json.encode(employee))
+                local newgrade = employee.grade + 1
+                if newgrade > 5 then ESX.ShowNotification("~r~Nie można awansować: ~b~"..employee.name.."~g~ ponieważ ma już najwyższą rangę!") return end
+                ESX.ShowNotification('~g~Awansowałeś~w~: '.. employee.name.. " na: ~b~"..getJobGradeLabel(employee.job, newgrade).."~w~")
+                ESX.TriggerServerCallback('pitu_mulitjob:db:setjobSteamID', function(status)
+                    dprint(tostring(status))
+                    menu.close()
+                    OpenEmployeeList()
+                end, {steamID = employee.identifier, job = employee.job, grade = newgrade})
+			elseif data.value == 'fire' then
+                ESX.ShowNotification('~r~Zwolniłeś~w~: '.. employee.name)
+                ESX.TriggerServerCallback('pitu_multijob:db:firePlayer', function(status)
+                    dprint(tostring(status))
+                    menu.close()
+                    OpenEmployeeList()
+                end, {steamHex = employee.identifier})
+			end
+		end, function(data, menu)
+			menu.close()
+		end)
+	end, society)
+end
 
 function OpenGetBMStocksMenu()
 	blackmoney = 0
@@ -303,18 +419,18 @@ function openArmoryMenu()
             dprint(json.encode(iweapon))
             local l_label = iweapon.label.." - "..iweapon.price.. "$"
             table.insert(elements, {label = l_label, value = iweapon.weaponName})
-            ESX.UI.Menu.CloseAll()
-            ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
-                title    = 'Zbrojownia',
-                align    = 'bottom-right',
-                elements = elements
-            }, function(data, menu)
-                TriggerServerEvent('pitu_multijob:shop:buyWeapon', data.current.value)
-                menu.close()
-            end, function(data, menu)
-                menu.close()
-            end)
         end
+        ESX.UI.Menu.CloseAll()
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
+            title    = 'Zbrojownia',
+            align    = 'bottom-right',
+            elements = elements
+        }, function(data, menu)
+            TriggerServerEvent('pitu_multijob:shop:buyWeapon', data.current.value)
+            menu.close()
+        end, function(data, menu)
+            menu.close()
+        end)
     end)
 end
 function OpenPutCashStocksMenu()
