@@ -239,7 +239,7 @@ function OpenGetBMStocksMenu()
 		dprint(tostring(blackmoneyamount))
 		blackmoney = blackmoneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
-			title    = 'Enter Amount ( avaible: '..tostring(blackmoneyamount)..' $)',
+			title    = 'Wpisz Ilość ( Dostępne: '..tostring(blackmoney)..' $)',
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			dprint(data2.value)
@@ -256,10 +256,10 @@ end
 
 function OpenPutBMStocksMenu()
 	blackmoney = 0
-	ESX.TriggerServerCallback('pitu_multijob:db:getPlayerBlackMoney', function(cb, blackmoneyamount)
+    ESX.TriggerServerCallback('pitu_multijob:db:getPlayerBlackMoney', function(cb, blackmoneyamount)
 		blackmoney = blackmoneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
-			title    = 'Enter Amount ( avaible: '..tostring(blackmoneyamount)..' $)',
+			title    = 'Wpisz Ilość ( Dostępne: '..tostring(blackmoney)..' $)',
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			dprint(data2.value)
@@ -280,7 +280,7 @@ function OpenGetCashStocksMenu()
 		dprint(tostring(moneyamount))
 		money = moneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
-			title    = 'Enter Amount ( avaible: '..tostring(moneyamount)..' $)',
+			title    = 'Wpisz Ilość ( Dostępne: '..tostring(moneyamount)..' $)',
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			print(data2.value)
@@ -305,7 +305,7 @@ function openArmoryMenu()
             table.insert(elements, {label = l_label, value = iweapon.weaponName})
             ESX.UI.Menu.CloseAll()
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
-                title    = 'Armory',
+                title    = 'Zbrojownia',
                 align    = 'bottom-right',
                 elements = elements
             }, function(data, menu)
@@ -322,7 +322,7 @@ function OpenPutCashStocksMenu()
 	ESX.TriggerServerCallback('pitu_multijob:db:getPlayerMoney', function(cb, moneyamount)
 		money = moneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
-			title    = 'Enter Amount ( avaible: '..tostring(moneyamount)..' $)',
+			title    = 'Wpisz Ilość ( Dostępne: '..tostring(moneyamount)..' $)',
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			print(data2.value)
@@ -339,16 +339,16 @@ end
 
 function openMenu()
     local elements = {
-        {label = 'Item Deposit', value = 'deposit'},
-        {label = 'Item Withdraw', value = 'withdraw'},
+        {label = 'Schowaj Przedmiot', value = 'deposit'},
+        {label = 'Wyjmij Przedmiot', value = 'withdraw'},
     }
-    table.insert(elements, {label = "Deposit Black Money", value = "put_bmstock"})
-    table.insert(elements, {label = "Deposit Money", value = "put_mstock"})
-    table.insert(elements, {label = "Withdraw Black Money", value = "get_bmstock"})
-	table.insert(elements, {label = "Withdraw Money", value = "get_mstock"})
+    table.insert(elements, {label = "Depozytuj Brudne Pieniądze", value = "put_bmstock"})
+    table.insert(elements, {label = "Depozytuj Pieniądze", value = "put_mstock"})
+    table.insert(elements, {label = "Wypłać Brudne Pieniądze", value = "get_bmstock"})
+	table.insert(elements, {label = "Wypłać Pieniądze", value = "get_mstock"})
 	ESX.UI.Menu.CloseAll()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
-		title    = 'Storage Room',
+		title    = 'Magazyn',
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
@@ -372,12 +372,12 @@ end
 
 function openMenu2()
     local elements = {
-        {label = 'Select Outfit', value = 'dressup'},
-        {label = 'Remove Outfit', value = 'rmoutf'}
+        {label = 'Wybierz Strój', value = 'dressup'},
+        {label = 'Usuń Strój', value = 'rmoutf'}
 	}
 	ESX.UI.Menu.CloseAll()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_clothin1', {
-		title    = 'Wardrobe',
+		title    = 'Szafa',
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
@@ -404,12 +404,12 @@ function depositMenu()
         table.insert(elements, {label = label, value = item.item})
     end
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitutm1ext_deposit', {
-		title    = 'Item Deposit',
+		title    = 'Depozyt Przedmiotów',
 		align    = 'bottom-right',
 		elements = elements
     }, function(data, menu)
         ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'pitutm1ext_dep_am', {
-            title    = 'Enter Amount',
+            title    = 'Wprowadź Ilość',
             align    = 'bottom-right',
         }, function(data2, menu2)
             if data2.value ~= nil then
@@ -435,13 +435,13 @@ function carSpawnerMenu(garage)
         table.insert(elements, {label = vehicle.label, value = vehicle.spawnName})
     end
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitumultijob_garage', {
-		title    = 'Garage',
+		title    = 'Garaż',
 		align    = 'bottom-right',
 		elements = elements
     }, function(data, menu)
         dprint("yoos")
         dprint(json.encode(garage))
-        spawnCar(garage.spawner.x, garage.spawner.y, garage.spawner.z, garage.spawner.h, 'zentorno')
+        spawnCar(garage.spawner.x, garage.spawner.y, garage.spawner.z, garage.spawner.h, data.current.value)
         menu.close()
         dprint(x)
         dprint(y)
@@ -493,13 +493,13 @@ function withdrawMenu()
         end
     end
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitutm1ext_withdraw', {
-		title    = 'Item Withdraw',
+		title    = 'Wyjmij Przedmiot',
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
         dprint(data.current.value)
         ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'pitutm1ext_withd_am', {
-            title    = 'Enter Amount',
+            title    = 'Wprowadź Ilość',
             align    = 'bottom-right',
         }, function(data2, menu2)
             if data2.value ~= nil then
@@ -530,7 +530,7 @@ function clothesMenu(mode)
             end
 
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'player_dressing', {
-                title    = 'Select Outfit',
+                title    = 'Wybierz Strój',
                 align    = 'bottom-right',
                 elements = elements
             }, function(data3, menu3)
@@ -560,7 +560,7 @@ function clothesMenu(mode)
             end
 
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'remove_cloth', {
-                title    = 'Remove Outfit',
+                title    = 'Usuń Strój',
                 align    = 'bottom-right',
                 elements = elements
             }, function(data3, menu3)

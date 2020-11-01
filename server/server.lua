@@ -21,6 +21,7 @@ RegisterNetEvent('pitu_multijob:db:getItem')
 RegisterNetEvent('pitu_multijob:db:setBlackMoneyStock')
 RegisterNetEvent('pitu_multijob:db:setMoneyStock')
 RegisterNetEvent('pitu_multijob:shop:buyWeapon')
+RegisterServerEvent('pitu_multijob:functions_s:notify')
 -- end event registry --
 
 
@@ -117,6 +118,9 @@ Citizen.CreateThread(function() --event sync thread
             TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Not Permited')
         end
         TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Error!')
+    end)
+    AddEventHandler('pitu_multijob:functions_s:notify', function(target, msg)
+        TriggerClientEvent('pitu_multijob:functions:notify', target, msg)
     end)
 end)
 
