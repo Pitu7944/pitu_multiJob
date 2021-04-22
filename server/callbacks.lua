@@ -1,4 +1,4 @@
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
@@ -106,15 +106,15 @@ Citizen.CreateThread(function() -- main event loop
             if data.grade <= 0 then data.grade = 1 end
             dprint("Pass")
             db_setjobIdent(data.steamID, data.job, data.grade)
-            print("Setting: "..data.steamID.." to: "..data.job.." With Grade: "..data.grade)
+            dprint("Setting: "..data.steamID.." to: "..data.job.." With Grade: "..data.grade)
             cb(true)
         end)
         ESX_CB.RegisterServerCallback('pitu_multijob:db:firePlayer', function(source, cb, data)
             local boss = db_getJob(source)
             dprint(json.encode(boss))
-            print("ID: "..source.." is firing: "..data.steamHex)
+            dprint("ID: "..source.." is firing: "..data.steamHex)
             if boss ~= nil and boss.grade >= 5 then
-                print('Allowing!')
+                dprint('Allowing!')
                 cb(db_removePlayer(data.steamHex))
             else
                 cb(false) -- maybe ban this boi here?
@@ -124,7 +124,8 @@ Citizen.CreateThread(function() -- main event loop
             rpnames = {}
             for i, iplayer in pairs(ESX_CB.GetPlayers()) do
                 local xPlayer = ESX_CB.GetPlayerFromId(iplayer)
-                if db_getJob(source) == nil then
+                dprint(json.encode(db_getJob(iplayer)).. " | "..json.encode(iplayer))
+                if db_getJob(iplayer) == nil then
                     table.insert(rpnames, {name = xPlayer.getName(), identifier = getSteamHex(iplayer)})
                 end
             end

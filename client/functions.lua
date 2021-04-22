@@ -47,9 +47,9 @@ function getRP_Names(Steamids)
 end
 
 function getEmployeeData(jobMembers, JobMember_Data)
-    print('------------------------')
-    print(json.encode(jobMembers))
-    print(json.encode(JobMember_Data))
+    dprint('------------------------')
+    dprint(json.encode(jobMembers))
+    dprint(json.encode(JobMember_Data))
     local employees_data = {}
     for i, ijobMember in pairs(jobMembers) do
         for ii, ijobMemberData in pairs(JobMember_Data) do
@@ -58,8 +58,8 @@ function getEmployeeData(jobMembers, JobMember_Data)
             end
         end
     end
-    print('=========================')
-    print(json.encode(employees_data))
+    dprint('=========================')
+    dprint(json.encode(employees_data))
     return employees_data
 end
 

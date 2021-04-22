@@ -1,4 +1,4 @@
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
@@ -37,7 +37,6 @@ function dprint(txt)
         print("^4[^2"..GetCurrentResourceName().."^4] ^3"..tostring(txt)..'^0')
     end
 end
-
 
 
 

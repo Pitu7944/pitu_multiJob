@@ -92,7 +92,7 @@ if Config.Enable_DoorLock then
 
 					if v.size then size = v.size end
 					if v.locked then displayText = "🔒" end
-					if v.isAuthorized then displayText = "Naciśnij ~g~[E]~w~ aby"..getEmoji(v.locked) end
+					if v.isAuthorized then displayText = ""..getEmoji(v.locked) end
 
 					al_ESX.Game.Utils.DrawText3D(v.textCoords, displayText, size)
 
@@ -127,9 +127,9 @@ if Config.Enable_DoorLock then
 
 	function getEmoji(state)
 		if state then
-			return ' 🔓'
+			return '~g~[E]~w~ 🔒'
 		else
-			return " 🔒"
+			return "~g~[E]~w~ 🔓"
 		end
 	end
 end

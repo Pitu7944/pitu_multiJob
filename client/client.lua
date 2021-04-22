@@ -59,6 +59,9 @@ Citizen.CreateThread(function()--command help show
         { name="Jobname", help="Job Name" },
         { name="Jobgrade", help="Job Grade" },
     })
+    TriggerEvent('chat:addSuggestion', '/pmj_unsetjob', 'Pitu_multiJob - UnJob (ADMIN)', {
+        { name="ID", help="Player ID" },
+    })
     TriggerEvent('chat:addSuggestion', '/pmj_checkjob', 'Pitu_multiJob - Check Player Job (ADMIN)', {
         { name="ID", help="Player ID" }
     })
@@ -265,7 +268,6 @@ end
 
 function OpenHireMenu()
     ESX.TriggerServerCallback('pitu_multijob:utils:getPlayers', function(players)
-        print(json.encode(players))
         local elements = {
 			head = {"Gracz", 'Czynności'},
 			rows = {}
@@ -281,15 +283,16 @@ function OpenHireMenu()
 		end
 
 		ESX.UI.Menu.Open('list', GetCurrentResourceName(), 'hire_list', elements, function(data, menu)
-			local player = data.data
-            if data.value == 'promote' then
-                print(json.encode(player))
+            local player = data.data
+            if data.value == 'hire' then
                 ESX.ShowNotification('~g~Zatrudniłeś~w~: ~b~'.. player.name.."~w~")
+                dprint("zatrudnianie....")
                 ESX.TriggerServerCallback('pitu_mulitjob:db:setjobSteamID', function(status)
                     dprint(tostring(status))
                     menu.close()
                     OpenHireMenu()
-                end, {steamID = player.identifier, job = playerJob, grade = 1})
+                end, {steamID = player.identifier, job = playerJob.job, grade = 1})
+                dprint("zatrudniono?")
 			end
 		end, function(data, menu)
 			menu.close()
@@ -399,7 +402,7 @@ function OpenGetCashStocksMenu()
 			title    = 'Wpisz Ilość ( Dostępne: '..tostring(moneyamount)..' $)',
 			align    = 'bottom-right',
 		}, function(data2, menu2)
-			print(data2.value)
+			dprint(data2.value)
 			TriggerServerEvent('pitu_multijob:db:setMoneyStock', tonumber(data2.value)*-1, false)
 			Wait(100)
 			menu2.close()

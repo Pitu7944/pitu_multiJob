@@ -2,7 +2,7 @@ fx_version 'cerulean'
 games { 'gta5' }
 author 'Pitu7944#2711'
 description 'Pitu7944\'s multiJob'
-version '1.1.0'
+version '1.2.5'
 
 
 server_scripts {
@@ -35,6 +35,9 @@ client_scripts {
     'addons/locks/client.lua',
     'addons/handcuffs/client.lua'
 }
+
+server_export 'db_getJob'
+server_export 'pmj_addJobMoney'
 
 
 dependency 'es_extended'

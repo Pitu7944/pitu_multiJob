@@ -40,6 +40,18 @@ if Config.Enable_Handcuffs then
 			TriggerClientEvent('pitu_multijob:functions:notify', source, '~r~Zakułeś~w~ ID: '..target)
 			TriggerClientEvent('pitu_multijob:functions:notify', target, 'Zostałeś ~r~Zakuty~w~ przez ID: '..source)
 			TriggerClientEvent('pitu_multijob:addons:cuff', target)
+			local xPlayer = ESX.GetPlayerFromId(source)
+			local xTarget = ESX.GetPlayerFromId(target)
+			local data = {
+				source_identifier = xPlayer.getIdentifier(),
+				source_name = xPlayer.getName(),
+				target_identifier = xTarget.getIdentifier(),
+				target_name = xTarget.getName(),
+				action = 'pmj_handcuffs',
+				type = 'cuff',
+				date = os.date('%Y-%m-%d %H:%M:%S')
+			}
+			exports.pitu_mongoLogs:send(data)
 			if not isInList(target) then table.insert(cuffedPlayers, target) end
 		end
 	end)
@@ -52,6 +64,18 @@ if Config.Enable_Handcuffs then
 			TriggerClientEvent('pitu_multijob:functions:notify', source, '~r~Rozkułeś~w~ ID: '..target)
 			TriggerClientEvent('pitu_multijob:functions:notify', target, 'Zostałeś ~r~Rozkuty~w~ przez ID: '..source)
 			TriggerClientEvent('pitu_multijob:addons:uncuff', target)
+			local xPlayer = ESX.GetPlayerFromId(source)
+			local xTarget = ESX.GetPlayerFromId(target)
+			local data = {
+				source_identifier = xPlayer.getIdentifier(),
+				source_name = xPlayer.getName(),
+				target_identifier = xTarget.getIdentifier(),
+				target_name = xTarget.getName(),
+				action = 'pmj_handcuffs',
+				type = 'uncuff',
+				date = os.date('%Y-%m-%d %H:%M:%S')
+			}
+			exports.pitu_mongoLogs:send(data)
 			popItem(target)
 			return
 		else
@@ -143,16 +167,52 @@ if Config.Enable_Handcuffs then
 	RegisterNetEvent('pitu_multijob:addons:drag')
 	AddEventHandler('pitu_multijob:addons:drag', function(target)
 		print("trying to drag: "..target)
+		local xPlayer = ESX.GetPlayerFromId(source)
+		local xTarget = ESX.GetPlayerFromId(target)
+		local data = {
+			source_identifier = xPlayer.getIdentifier(),
+			source_name = xPlayer.getName(),
+			target_identifier = xTarget.getIdentifier(),
+			target_name = xTarget.getName(),
+			action = 'pmj_handcuffs',
+			type = 'drag',
+			date = os.date('%Y-%m-%d %H:%M:%S')
+		}
+		exports.pitu_mongoLogs:send(data)
 		TriggerClientEvent('pitu_multijob:addons:drag', target, source)
 	end)
 
 	RegisterNetEvent('pitu_multijob:addons:putInVehicle')
 	AddEventHandler('pitu_multijob:addons:putInVehicle', function(target)
+		local xPlayer = ESX.GetPlayerFromId(source)
+		local xTarget = ESX.GetPlayerFromId(target)
+		local data = {
+			source_identifier = xPlayer.getIdentifier(),
+			source_name = xPlayer.getName(),
+			target_identifier = xTarget.getIdentifier(),
+			target_name = xTarget.getName(),
+			action = 'pmj_handcuffs',
+			type = 'put_in_vehicle',
+			date = os.date('%Y-%m-%d %H:%M:%S')
+		}
+		exports.pitu_mongoLogs:send(data)
 		TriggerClientEvent('pitu_multijob:addons:putInVehicle', target)
 	end)
 
 	RegisterNetEvent('pitu_multijob:addons:OutVehicle')
 	AddEventHandler('pitu_multijob:addons:OutVehicle', function(target)
+		local xPlayer = ESX.GetPlayerFromId(source)
+		local xTarget = ESX.GetPlayerFromId(target)
+		local data = {
+			source_identifier = xPlayer.getIdentifier(),
+			source_name = xPlayer.getName(),
+			target_identifier = xTarget.getIdentifier(),
+			target_name = xTarget.getName(),
+			action = 'pmj_handcuffs',
+			type = 'put_out_vehicle',
+			date = os.date('%Y-%m-%d %H:%M:%S')
+		}
+		exports.pitu_mongoLogs:send(data)
 		TriggerClientEvent('pitu_multijob:addons:OutVehicle', target)
 	end)
 

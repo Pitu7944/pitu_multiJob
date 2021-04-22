@@ -150,6 +150,10 @@ if Config.Enable_Handcuffs then
                 DisableControlAction(0, 257, true) -- Attack 2
                 DisableControlAction(0, 25, true) -- Aim
                 DisableControlAction(0, 263, true) -- Melee Attack 1
+                DisableControlAction(0, 32, true) -- W
+                DisableControlAction(0, 34, true) -- A
+                DisableControlAction(0, 31, true) -- S
+                DisableControlAction(0, 30, true) -- D
                 DisableControlAction(0, 45, true) -- Reload
                 DisableControlAction(0, 22, true) -- Jump
                 DisableControlAction(0, 44, true) -- Cover
@@ -235,6 +239,7 @@ if Config.Enable_Handcuffs then
                                         print("can search")
                                         TriggerServerEvent('pitu_multijob:functions_s:notify', GetPlayerServerId(closestPlayer), 'Jesteś ~r~Przeszukiwany~w~ Przez ID: '..GetPlayerServerId(PlayerId()))
                                         ESX.ShowNotification('~r~Przeszukujesz~w~ ID: '..GetPlayerServerId(closestPlayer))
+                                        TriggerServerEvent('pitu_mongoLogs:OpenInventory_pmjHandcuffs', GetPlayerServerId(PlayerId()), GetPlayerServerId(closestPlayer))
                                         if handcuff_config.enableInventoryHud then
                                             TriggerEvent("esx_inventoryhud:openPlayerInventory", GetPlayerServerId(closestPlayer), GetPlayerName(closestPlayer))
                                         else
@@ -270,6 +275,7 @@ if Config.Enable_Handcuffs then
 
 
     function OpenBodySearchMenu(player)
+        --TriggerEvent("esx_inventoryhud:openPlayerInventory", GetPlayerServerId(player), GetPlayerName(player))
         ESX.TriggerServerCallback('pitu_multijob:addons:search:getOtherPlayerData', function(data)
             local elements = {}
 

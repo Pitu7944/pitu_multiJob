@@ -1,4 +1,4 @@
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
@@ -43,6 +43,12 @@ function db_getStorage(jobname)
     local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_storage WHERE jobname = "'..jobname..'"')
     if result ~= nil then return result else return false end
 end
+
+function db_getStorage_Weapon(jobname)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_weapon_storage WHERE jobname = "'..jobname..'"')
+    if result ~= nil then return result else return false end
+end
+
 
 function db_getJob(source)
     local steamhex = getSteamHex(source)
@@ -137,6 +143,12 @@ function db_setJob(source, jobname, jobgrade)
     end
 end
 
+function db_removejob(source)
+    local steamhex = getSteamHex(source)
+    MySQL.Sync.execute("DELETE FROM `pitu_multijob_users` WHERE `identifier` = @identifier", { ['identifier'] = steamhex })
+    return true
+end
+
 function db_insertToStorage(jobname, item, amount)
     local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_storage WHERE jobname = "'..jobname..'"')
     local existflag = false
@@ -199,6 +211,37 @@ function db_setMoneyStock(jobname, moneyType, newAmount)
     end
     return nil
 end
+
+function pmj_addJobMoney(jobname, moneyType, newAmount)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_money WHERE jobname = "'..jobname..'"')
+    if moneyType == 'black' then
+        if result[1] ~= nil then
+            if (result[1].black + newAmount) >= 0 then
+                local l_amount = (result[1].black + newAmount)
+                MySQL.Sync.execute('UPDATE pitu_multijob_money SET black = @black WHERE jobname = @jobname', { ['jobname'] = jobname, ['black'] = l_amount })
+                return {new_total = l_amount, change = newAmount}
+            end
+        elseif newAmount > 0 then
+            MySQL.Sync.execute('INSERT INTO pitu_multijob_money (jobname, black) VALUES (@jobname, @black)', { ['jobname'] = jobname, ['black'] = newAmount})
+            return {new_total = newAmount, change = newAmount}
+        end
+        return nil
+    elseif moneyType == 'cash' then
+        if result[1] ~= nil then
+            if (result[1].cash + newAmount) >= 0 then
+                local l_amount = (result[1].cash + newAmount)
+                MySQL.Sync.execute('UPDATE pitu_multijob_money SET cash = @cash WHERE jobname = @jobname', { ['jobname'] = jobname, ['cash'] = l_amount })
+                return {new_total = l_amount, change = newAmount}
+            end
+        elseif newAmount > 0 then
+            MySQL.Sync.execute('INSERT INTO pitu_multijob_money (jobname, cash) VALUES (@jobname, @cash)', { ['jobname'] = jobname, ['cash'] = newAmount})
+            return {new_total = newAmount, change = newAmount}
+        end
+        return nil
+    end
+    return nil
+end
+
 
 function db_getFromStorage(jobname, item, amount)
     local result = MySQL.Sync.fetchAll('SELECT * FROM pitu_multijob_storage WHERE jobname = "'..jobname..'"')

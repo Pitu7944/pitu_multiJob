@@ -1,4 +1,4 @@
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
@@ -24,6 +24,7 @@ RegisterNetEvent('pitu_multijob:shop:buyWeapon')
 RegisterNetEvent('pitu_multijob:functions_s:notify')
 -- end event registry --
 
+print(Config)
 
 Citizen.CreateThread(function() --event sync thread
     AddEventHandler('pitu_multijob:db:storeItem', function(item, amount)
@@ -127,8 +128,6 @@ end)
 Citizen.CreateThread(function() -- main event loop
     while db_ready == false do Wait(0) end
     dprint("[Server] Loaded")
-    dprint(db_insertToStorage('testjob', 'clip', 5))
-    dprint(db_getFromStorage('testjob', 'clip', 10))
 end)
 
 RegisterCommand('pmj_checkjob', function(source, args)
@@ -155,6 +154,32 @@ RegisterCommand('pmj_checkjob', function(source, args)
         })
     end
 end, false)
+
+RegisterCommand('pmj_unsetjob', function(source, args)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if args[1] == nil then 
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"Pitu_MultiJob", "Enter Player ID!"}
+        })
+        return
+    end
+    if xPlayer.getGroup() ~= 'user' then
+        db_removejob(args[1])
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"Pitu_MultiJob", "Succesfully Removed Job from ID: "..args[1].." !"}
+        })
+    else
+        TriggerClientEvent('chat:addMessage', source, {
+            color = { 255, 0, 0},
+            multiline = true,
+            args = {"Pitu_MultiJob", "No permission to do this!"}
+        })
+    end
+end)
 
 
 RegisterCommand('pmjinfo', function(source)
@@ -193,7 +218,7 @@ end, false)
 
 
 
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
