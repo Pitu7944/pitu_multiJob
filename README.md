@@ -62,24 +62,24 @@ Just add the following code to the Config.jobs, the script will take care of the
         }
     },
     grades = { -- job grades
-        { grade = 1, label = 'Pachołek'},
-        { grade = 2, label = 'Członek'},
-        { grade = 3, label = 'Zaufany'},
-        { grade = 4, label = 'Prawa ręka'},
-        { grade = 5, label = 'Szef'},
+        { grade = 1, label = 'New Hire'},
+        { grade = 2, label = 'Member'},
+        { grade = 3, label = 'Trusted'},
+        { grade = 4, label = 'Right Hand'},
+        { grade = 5, label = 'Boss'},
     },
     zones = {
         boss = { -- boss menu
             rq_grade = 5,
-            label = 'Naciśnij ~g~[E]~w~ aby otworzyć Menu Szefa', -- zone action message
+            label = 'Press ~g~[E]~w~ to open Boss Menu', -- zone action message
             pos = {x = 1007.88,  y = -3170.32,  z = -39.72} -- zone position ( remember to subtract one from Z coord! )
         },
         changerooms = { -- clothing change menu
-            label = 'Naciśnij ~g~[E]~w~ aby otworzyć Przebieralnie', -- zone action message
+            label = 'Press ~g~[E]~w~ to open Clothing Menu', -- zone action message
             pos = {x = 1010.6,  y = -3167.68,  z = -39.72} -- zone position ( remember to subtract one from Z coord! )
         },
         armory = { -- weapon shop menu
-            label = 'Naciśnij ~g~[E]~w~ aby otworzyć Zbrojownie', -- zone action message
+            label = 'Press ~g~[E]~w~ to open the Armory', -- zone action message
             pos = {x = 1001.72,  y = -3177.12,  z = -39.72}, -- zone position ( remember to subtract one from Z coord! )
             weapons = { -- add weapons here
                 {weaponName = 'pistol', label = 'pistol', price = 150}, -- weaponName is weapon spawnname , label is Label
@@ -87,11 +87,11 @@ Just add the following code to the Config.jobs, the script will take care of the
             }
         },
         storage = { -- item storage menu
-            label = 'Naciśnij ~g~[E]~w~ aby otworzyć Magazyn', -- zone action message
+            label = 'Press ~g~[E]~w~ to open the Storage', -- zone action message
             pos = {x = 997.88,  y = -3172.72,  z = -39.72}, -- zone position ( remember to subtract one from Z coord! )
         },
         garage = {
-            label = 'Naciśnij ~g~[E]~w~ aby otworzyć Garaż', -- zone action message
+            label = 'Press ~g~[E]~w~ to open the Garage', -- zone action message
             pos = {x = 1009.32,  y = -3156.2,  z = -39.72}, -- zone position ( remember to subtract one from Z coord! )
             vehicles = { -- add vehicles here
                 {spawnName = 'zentorno', label = 'Zentorno'} -- vehicle name and label
@@ -101,7 +101,7 @@ Just add the following code to the Config.jobs, the script will take care of the
             },
         },
         deleter = {
-            label = 'Naciśnij ~g~[E]~w~ aby schować pojazd', -- zone action message
+            label = 'Press ~g~[E]~w~ to return your Vehicle', -- zone action message
             pos = {x = 1005.16,  y = -3159.64,  z = -39.72}, -- zone position ( remember to subtract one from Z coord! )
         }
     }
