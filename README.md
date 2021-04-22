@@ -1,4 +1,4 @@
-<h1 align="center"><img alt="Logo" src="https://i.imgur.com/OoXNvcu.png" /></h1>
+<h1 align="center"><img alt="Logo" src="https://i.imgur.com/ychEsjH.png" /></h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.2.5-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/Pitu7944/pitu_multiJob#readme" target="_blank">
