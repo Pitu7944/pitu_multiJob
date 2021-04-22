@@ -9,6 +9,8 @@
   </a>
 </p>
 
+<img alt="Logo" src="https://i.imgur.com/OoXNvcu.png" />
+
 > FiveM esx addon for adding second job, gang/mafia/etc...
 
 ## Installation
