@@ -13,7 +13,7 @@
 
 ## Looking for help adding Translation Support!
 
-> if you are interested please dm me on Discord!
+> if you are interested please dm me on Discord ( Pitu7944#2711 ) !
 
 ## Installation
 <b>Dependencies</b>
