@@ -24,7 +24,7 @@ esx_clotheshop
 ```
 <b>Setting up your Database</b>
 ```
-import the provided pitu_multijob.sql to yout DB
+import the provided pitu_multijob.sql to your Database
 ```
 
 ## Usage
