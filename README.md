@@ -11,7 +11,6 @@
 
 > FiveM esx addon for adding second job, gang/mafia/etc...
 
-### 🏠 [Homepage](https://github.com/Pitu7944/pitu_multiJob#readme)
 ## Installation
 <b>Dependencies</b>
 ```
