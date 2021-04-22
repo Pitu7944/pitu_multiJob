@@ -15,6 +15,20 @@
 > FiveM esx addon for adding second job, gang/mafia/etc...
 
 ### 🏠 [Homepage](https://github.com/Pitu7944/pitu_multiJob#readme)
+## Installation
+<b>Start After</b>
+```
+mysql-async
+es_extended
+essentialsmode
+esx_property
+esx_addoninventory
+esx_clotheshop
+```
+<b>Setting up your Database</b>
+```
+import the provided pitu_multijob.sql to yout DB
+```
 
 ## Usage
 <b>Setting a Job:</b>
