@@ -150,10 +150,6 @@ if Config.Enable_Handcuffs then
                 DisableControlAction(0, 257, true) -- Attack 2
                 DisableControlAction(0, 25, true) -- Aim
                 DisableControlAction(0, 263, true) -- Melee Attack 1
-                DisableControlAction(0, 32, true) -- W
-                DisableControlAction(0, 34, true) -- A
-                DisableControlAction(0, 31, true) -- S
-                DisableControlAction(0, 30, true) -- D
                 DisableControlAction(0, 45, true) -- Reload
                 DisableControlAction(0, 22, true) -- Jump
                 DisableControlAction(0, 44, true) -- Cover

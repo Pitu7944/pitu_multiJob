@@ -1,7 +1,7 @@
 Config = {}
 handcuff_config = {}
 lock_Config = {}
---[[ edited ("insert date here") by :
+--[[ edited (22.04.2021) by :
  ___  _    _        ___  ___   __    __          ___  ___  _  _ 
 | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
 |  _/| |  | | | | | / / `_  //_  .|/_  .| _|_|_  / /  / / | || |
@@ -9,12 +9,12 @@ lock_Config = {}
 any issues? Dm me on discord (Pitu7944#2711)
 ]]
 -- addon enable options --
-Config.Enable_Handcuffs = true
-Config.Enable_DoorLock = true
+Config.Enable_Handcuffs = true -- enable handcuff addon
+Config.Enable_DoorLock = true -- enable doorlock addon
 
-Config.DebugEnabled = false
+Config.DebugEnabled = false -- show debug info
 Config.clientSyncTime = 5 -- client sync time in seconds
-handcuff_config.enableInventoryHud = false
+handcuff_config.enableInventoryHud = false -- use inventoryhud handcuffs
 Config.Jobs = {
     {
         name = 'anonymous', -- name of the job (to set job a player do /pmj_setjob {id} {name} {grade}

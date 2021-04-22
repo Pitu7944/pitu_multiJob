@@ -2,7 +2,7 @@ fx_version 'cerulean'
 games { 'gta5' }
 author 'Pitu7944#2711'
 description 'Pitu7944\'s multiJob'
-version '1.0.0'
+version '1.1.0'
 
 
 server_scripts {
