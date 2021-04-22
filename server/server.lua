@@ -33,7 +33,7 @@ Citizen.CreateThread(function() --event sync thread
         local job = db_getJob(_source).job
         if xPlayer ~= nil and job ~= nil and xPlayer.getInventoryItem(item).count >= amount then
             db_insertToStorage(job, item, amount)
-            TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Deposited ~g~'..amount..' of '..ESX.GetItemLabel(item)..'~w~')
+            TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_store_item'], amount, ESX.GetItemLabel(item)))
             xPlayer.removeInventoryItem(item, amount)
         end 
     end)
@@ -44,7 +44,7 @@ Citizen.CreateThread(function() --event sync thread
         if xPlayer ~= nil and job ~= nil then
             if db_getFromStorage(job, item, amount) ~= false then
                 xPlayer.addInventoryItem(item, amount)
-                TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Withdrawn ~g~'..amount..' of '..ESX.GetItemLabel(item)..'~w~')
+                TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_withdraw_item'], amount, ESX.GetItemLabel(item)))
             end
         end 
     end)
@@ -65,10 +65,10 @@ Citizen.CreateThread(function() --event sync thread
                 bma = db_setMoneyStock(playerJob, 'black', newAmount)
                 if isPaying == false and bma ~= nil then
                     xPlayer.addAccountMoney('black_money', math.abs(newAmount))
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Withdrawn ~g~'..math.abs(newAmount)..'$~w~ ~u~(~r~dirty~u~)~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_withdraw_money_black'], math.abs(newAmount)))
                 elseif isPaying == true and bma ~= nil then
                     xPlayer.removeAccountMoney('black_money', math.abs(newAmount))
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Deposited ~g~'..math.abs(newAmount)..'$~w~ ~u~(~r~dirty~u~)~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_deposit_money_black'], math.abs(newAmount)))
                 end
             end
         end
@@ -89,10 +89,10 @@ Citizen.CreateThread(function() --event sync thread
                 bma = db_setMoneyStock(playerJob, 'cash', newAmount)
                 if isPaying == false and bma ~= nil then
                     xPlayer.addMoney(math.abs(newAmount))
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Withdrawn ~g~'..math.abs(newAmount)..'$~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_withdraw_money'], math.abs(newAmount)))
                 elseif isPaying == true and bma ~= nil then
                     xPlayer.removeMoney(math.abs(newAmount))
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Deposited ~g~'..math.abs(newAmount)..'$~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_deposit_money'], math.abs(newAmount)))
                 end
             end
         end
@@ -110,15 +110,15 @@ Citizen.CreateThread(function() --event sync thread
                     dprint(weapon.weaponName)
                     xPlayer.removeMoney(weapon.price)
                     xPlayer.addWeapon(weapon.weaponName, 100)
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'You Bought ~g~'..weapon.label..'~w~ with 100 ammo')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, string.format(trs['s_notifications_weapon_bought'], weapon.label))
                     return
                 else
-                    TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Not enough ~g~Money~w~')
+                    TriggerClientEvent('pitu_multijob:functions:notify', _source, trs['s_notification_not_enough_money'])
                 end
             end
-            TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Not Permited')
+            TriggerClientEvent('pitu_multijob:functions:notify', _source, trs['s_notifications_not_permitted'])
         end
-        TriggerClientEvent('pitu_multijob:functions:notify', _source, 'Error!')
+        TriggerClientEvent('pitu_multijob:functions:notify', _source, trs['s_notifications_error'])
     end)
     AddEventHandler('pitu_multijob:functions_s:notify', function(target, msg)
         TriggerClientEvent('pitu_multijob:functions:notify', target, msg)
@@ -136,7 +136,7 @@ RegisterCommand('pmj_checkjob', function(source, args)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "Enter Player ID!"}
+            args = {"Pitu_MultiJob", trs['s_commands_error_no_id']}
         })
         return
     end
@@ -150,7 +150,7 @@ RegisterCommand('pmj_checkjob', function(source, args)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "No permission to do this!"}
+            args = {"Pitu_MultiJob", trs['s_commands_error_no_permission']}
         })
     end
 end, false)
@@ -161,7 +161,7 @@ RegisterCommand('pmj_unsetjob', function(source, args)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "Enter Player ID!"}
+            args = {"Pitu_MultiJob", trs['s_commands_error_no_id']}
         })
         return
     end
@@ -170,13 +170,13 @@ RegisterCommand('pmj_unsetjob', function(source, args)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "Succesfully Removed Job from ID: "..args[1].." !"}
+            args = {"Pitu_MultiJob", string.format(trs['s_commands_remove_job_succes'], args[1])}
         })
     else
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "No permission to do this!"}
+            args = {"Pitu_MultiJob", trs['s_commands_error_no_permission']}
         })
     end
 end)
@@ -188,13 +188,13 @@ RegisterCommand('pmjinfo', function(source)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"System", "You belong to "..jd.job.." and your grade is "..getGrade(jd.job, jd.grade).label}
+            args = {"System", string.format(trs, jd.job, getGrade(jd.job, jd.grade).label)}
         })
     else
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"System", "You are not employed!"}
+            args = {"System", trs['s_commands_unemployed']}
         })
     end
 end, false)
@@ -211,7 +211,7 @@ RegisterCommand('pmj_setjob', function(source, args)
         TriggerClientEvent('chat:addMessage', source, {
             color = { 255, 0, 0},
             multiline = true,
-            args = {"Pitu_MultiJob", "No permission to do this!"}
+            args = {"Pitu_MultiJob", trs['s_commands_error_no_permission']}
         })
     end
 end, false)

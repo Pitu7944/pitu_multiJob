@@ -54,18 +54,18 @@ Citizen.CreateThread(function() -- sync thread
 end)
 
 Citizen.CreateThread(function()--command help show
-    TriggerEvent('chat:addSuggestion', '/pmj_setjob', 'Pitu_multiJob - SetJob (ADMIN)', {
-        { name="ID", help="Player ID" },
-        { name="Jobname", help="Job Name" },
-        { name="Jobgrade", help="Job Grade" },
+    TriggerEvent('chat:addSuggestion', '/pmj_setjob', trs['setjob_tooltip'], {
+        { name="ID", help=trs['setjob_helptext1'] },
+        { name="Jobname", help=trs['setjob_helptext2'] },
+        { name="Jobgrade", help=trs['setjob_helptext3'] },
     })
-    TriggerEvent('chat:addSuggestion', '/pmj_unsetjob', 'Pitu_multiJob - UnJob (ADMIN)', {
-        { name="ID", help="Player ID" },
+    TriggerEvent('chat:addSuggestion', '/pmj_unsetjob', trs['unsetjob_tooltip'], {
+        { name="ID", help=trs['unsetjob_helptext1'] },
     })
-    TriggerEvent('chat:addSuggestion', '/pmj_checkjob', 'Pitu_multiJob - Check Player Job (ADMIN)', {
-        { name="ID", help="Player ID" }
+    TriggerEvent('chat:addSuggestion', '/pmj_checkjob', trs['checkjob_tooltip'], {
+        { name="ID", help=trs['checkjob_helptext1'] }
     })
-    TriggerEvent('chat:addSuggestion', '/pmjinfo', 'Pitu_multiJob - Check Self Job')
+    TriggerEvent('chat:addSuggestion', '/pmjinfo', trs['pmjinfo_tooltip'])
 end)
 
 Citizen.CreateThread(function() -- register jobs from config
@@ -211,20 +211,20 @@ function DeleteGivenVehicle( veh, timeoutMax )
     SetEntityAsMissionEntity( veh, true, true )
     DeleteVehicle( veh )
     if ( DoesEntityExist( veh ) ) then
-        Notify( "~r~Failed to delete vehicle, trying again..." )
+        Notify(trs['delete_vehicle_failed'])
         while ( DoesEntityExist( veh ) and timeout < timeoutMax ) do 
             DeleteVehicle( veh )
             if ( not DoesEntityExist( veh ) ) then 
-                Notify( "~g~Vehicle Stored." )
+                Notify(trs['delete_vehicle_succes'])
             end 
             timeout = timeout + 1 
             Citizen.Wait( 500 )
             if ( DoesEntityExist( veh ) and ( timeout == timeoutMax - 1 ) ) then
-                Notify( "~r~Failed to delete vehicle after " .. timeoutMax .. " retries." )
+                Notify(string.format(trs['delete_vehicle_failed_try_amount'], timeoutMax))
             end 
         end 
     else 
-        Notify( "~g~Vehicle Stored." )
+        Notify(trs['delete_vehicle_succes'])
     end 
 end 
 
@@ -237,21 +237,20 @@ function deletevehiclein()
             if ( GetPedInVehicleSeat( vehicle, -1 ) == ped ) then 
                 DeleteGivenVehicle( vehicle, numRetries )
             else 
-                Notify( "You must be in the driver's seat!" )
+                Notify(trs['delete_vehicle_not_driver'])
             end
         end 
     end
 end
 
 function OpenbossMenu()
-    print("opening boss menu")
     ESX.UI.Menu.CloseAll()
     local elements = {
-        {label = 'Awansuj/Zwolnij', value = 'awans/zwolnij'},
-        {label = 'Zatrudnij', value = 'zatrudnij'}
+        {label = trs['boss_menu_promote_fire'], value = 'awans/zwolnij'},
+        {label = trs['boss_menu_hire'], value = 'zatrudnij'}
     }
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_boss_actions', {
-        title    = 'Menu Szefa',
+        title    = trs['boss_menu_title'],
         align    = 'bottom-right',
         elements = elements
     }, function(data, menu)
@@ -277,7 +276,7 @@ function OpenHireMenu()
 				data = player,
 				cols = {
 					player.name,
-					'{{' .. "Zatrudnij" .. '|hire}}'
+					'{{' .. trs['boss_menu_hire'] .. '|hire}}'
 				}
 			})
 		end
@@ -285,7 +284,7 @@ function OpenHireMenu()
 		ESX.UI.Menu.Open('list', GetCurrentResourceName(), 'hire_list', elements, function(data, menu)
             local player = data.data
             if data.value == 'hire' then
-                ESX.ShowNotification('~g~Zatrudniłeś~w~: ~b~'.. player.name.."~w~")
+                ESX.ShowNotification(string.format(trs['boss_menu_hire_notification'], player.name))
                 dprint("zatrudnianie....")
                 ESX.TriggerServerCallback('pitu_mulitjob:db:setjobSteamID', function(status)
                     dprint(tostring(status))
@@ -309,7 +308,7 @@ function OpenEmployeeList()
         end
         local employees = getEmployeeData(jobMembers, getRP_Names(steamIDS))
         local elements = {
-			head = {"Członek", 'Grade', 'Czynności'},
+			head = {trs['boss_menu_member'], trs['boss_menu_grade'], trs['boss_menu_actions']},
 			rows = {}
         }
         for i=1, #employees, 1 do
@@ -320,7 +319,7 @@ function OpenEmployeeList()
 				cols = {
 					employees[i].name,
 					gradeLabel,
-					'{{' .. "Awansuj" .. '|promote}} {{' .. "Zwolnij" .. '|fire}}'
+					'{{' .. trs['boss_menu_promote'] .. '|promote}} {{' .. trs['boss_menu_fire'] .. '|fire}}'
 				}
 			})
 		end
@@ -330,15 +329,15 @@ function OpenEmployeeList()
             if data.value == 'promote' then
                 print(json.encode(employee))
                 local newgrade = employee.grade + 1
-                if newgrade > 5 then ESX.ShowNotification("~r~Nie można awansować: ~b~"..employee.name.."~g~ ponieważ ma już najwyższą rangę!") return end
-                ESX.ShowNotification('~g~Awansowałeś~w~: '.. employee.name.. " na: ~b~"..getJobGradeLabel(employee.job, newgrade).."~w~")
+                if newgrade > 5 then ESX.ShowNotification(string.format(trs['boss_menu_cant_promote'], employee.name)) return end
+                ESX.ShowNotification(string.format(trs['boss_menu_promote_succes'], employee.name, getJobGradeLabel(employee.job, newgrade)))
                 ESX.TriggerServerCallback('pitu_mulitjob:db:setjobSteamID', function(status)
                     dprint(tostring(status))
                     menu.close()
                     OpenEmployeeList()
                 end, {steamID = employee.identifier, job = employee.job, grade = newgrade})
 			elseif data.value == 'fire' then
-                ESX.ShowNotification('~r~Zwolniłeś~w~: '.. employee.name)
+                ESX.ShowNotification(string.format(trs['boss_menu_fire_succes'], employee.name))
                 ESX.TriggerServerCallback('pitu_multijob:db:firePlayer', function(status)
                     dprint(tostring(status))
                     menu.close()
@@ -358,7 +357,7 @@ function OpenGetBMStocksMenu()
 		dprint(tostring(blackmoneyamount))
 		blackmoney = blackmoneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
-			title    = 'Wpisz Ilość ( Dostępne: '..tostring(blackmoney)..' $)',
+			title    = string.format(trs['black_money_dialog'], tostring(blackmoney)),
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			dprint(data2.value)
@@ -378,7 +377,7 @@ function OpenPutBMStocksMenu()
     ESX.TriggerServerCallback('pitu_multijob:db:getPlayerBlackMoney', function(cb, blackmoneyamount)
 		blackmoney = blackmoneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'bmstockget', {
-			title    = 'Wpisz Ilość ( Dostępne: '..tostring(blackmoney)..' $)',
+			title    = string.format(trs['black_money_dialog'], tostring(blackmoney)),
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			dprint(data2.value)
@@ -399,7 +398,7 @@ function OpenGetCashStocksMenu()
 		dprint(tostring(moneyamount))
 		money = moneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
-			title    = 'Wpisz Ilość ( Dostępne: '..tostring(moneyamount)..' $)',
+			title    = string.format(trs['black_money_dialog'], tostring(moneyamount)),
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			dprint(data2.value)
@@ -441,7 +440,7 @@ function OpenPutCashStocksMenu()
 	ESX.TriggerServerCallback('pitu_multijob:db:getPlayerMoney', function(cb, moneyamount)
 		money = moneyamount
 		ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'mstockget', {
-			title    = 'Wpisz Ilość ( Dostępne: '..tostring(moneyamount)..' $)',
+			title    = string.format(trs['black_money_dialog'], tostring(moneyamount)),
 			align    = 'bottom-right',
 		}, function(data2, menu2)
 			print(data2.value)
@@ -458,16 +457,16 @@ end
 
 function openMenu()
     local elements = {
-        {label = 'Schowaj Przedmiot', value = 'deposit'},
-        {label = 'Wyjmij Przedmiot', value = 'withdraw'},
+        {label = trs['storage_deposit_item'], value = 'deposit'},
+        {label = trs['storage_withdraw_item'], value = 'withdraw'},
     }
-    table.insert(elements, {label = "Depozytuj Brudne Pieniądze", value = "put_bmstock"})
-    table.insert(elements, {label = "Depozytuj Pieniądze", value = "put_mstock"})
-    table.insert(elements, {label = "Wypłać Brudne Pieniądze", value = "get_bmstock"})
-	table.insert(elements, {label = "Wypłać Pieniądze", value = "get_mstock"})
+    table.insert(elements, {label = trs['money_black_deposit_label'], value = "put_bmstock"})
+    table.insert(elements, {label = trs['money_deposit_label'], value = "put_mstock"})
+    table.insert(elements, {label = trs['money_black_withdraw_label'], value = "get_bmstock"})
+	table.insert(elements, {label = trs['money_withdraw_label'], value = "get_mstock"})
 	ESX.UI.Menu.CloseAll()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_actions', {
-		title    = 'Magazyn',
+		title    = trs['storage_label'],
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
@@ -491,12 +490,12 @@ end
 
 function openMenu2()
     local elements = {
-        {label = 'Wybierz Strój', value = 'dressup'},
-        {label = 'Usuń Strój', value = 'rmoutf'}
+        {label = trs['outfit_select'], value = 'dressup'},
+        {label = trs['outfit_remove'], value = 'rmoutf'}
 	}
 	ESX.UI.Menu.CloseAll()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_clothin1', {
-		title    = 'Szafa',
+		title    = trs['outfit_label'],
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
@@ -523,12 +522,12 @@ function depositMenu()
         table.insert(elements, {label = label, value = item.item})
     end
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitutm1ext_deposit', {
-		title    = 'Depozyt Przedmiotów',
+		title    = trs['item_deposit_label'],
 		align    = 'bottom-right',
 		elements = elements
     }, function(data, menu)
         ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'pitutm1ext_dep_am', {
-            title    = 'Wprowadź Ilość',
+            title    = trs['item_amount_dialog'],
             align    = 'bottom-right',
         }, function(data2, menu2)
             if data2.value ~= nil then
@@ -554,7 +553,7 @@ function carSpawnerMenu(garage)
         table.insert(elements, {label = vehicle.label, value = vehicle.spawnName})
     end
     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitumultijob_garage', {
-		title    = 'Garaż',
+		title    = trs['garage_label'],
 		align    = 'bottom-right',
 		elements = elements
     }, function(data, menu)
@@ -565,10 +564,6 @@ function carSpawnerMenu(garage)
         dprint(x)
         dprint(y)
         dprint(z)
-        --local veh = data.current.value
-        --if veh ~= nil then
-        --    print('xd')
-        --end
 	end, function(data, menu)
 		menu.close()
     end)
@@ -612,13 +607,13 @@ function withdrawMenu()
         end
     end
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitutm1ext_withdraw', {
-		title    = 'Wyjmij Przedmiot',
+		title    = trs['storage_withdraw_item'],
 		align    = 'bottom-right',
 		elements = elements
 	}, function(data, menu)
         dprint(data.current.value)
         ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'pitutm1ext_withd_am', {
-            title    = 'Wprowadź Ilość',
+            title    = trs['item_amount_dialog'],
             align    = 'bottom-right',
         }, function(data2, menu2)
             if data2.value ~= nil then
@@ -649,7 +644,7 @@ function clothesMenu(mode)
             end
 
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'player_dressing', {
-                title    = 'Wybierz Strój',
+                title    = trs['outfit_select'],
                 align    = 'bottom-right',
                 elements = elements
             }, function(data3, menu3)
@@ -679,13 +674,13 @@ function clothesMenu(mode)
             end
 
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'remove_cloth', {
-                title    = 'Usuń Strój',
+                title    = trs['outfit_remove'],
                 align    = 'bottom-right',
                 elements = elements
             }, function(data3, menu3)
                 menu3.close()
                 TriggerServerEvent('esx_property:removeOutfit', data3.current.value)
-                ESX.ShowNotification("Removed Outfit!")
+                ESX.ShowNotification(trs['outfit_remove_notification'])
             end, function(data3, menu3)
                 menu3.close()
             end)

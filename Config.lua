@@ -1,6 +1,11 @@
 Config = {}
 handcuff_config = {}
 lock_Config = {}
+
+--[[
+    Change language in translation.lua!
+]]
+
 --[[ edited (22.04.2021) by :
      ___  _    _        ___  ___   __    __          ___  ___  _  _ 
     | . \<_> _| |_ _ _ |_  || . | /. |  /. |  _|_|_ <_  >|_  |/ |/ |
@@ -11,7 +16,6 @@ lock_Config = {}
 -- addon enable options --
 Config.Enable_Handcuffs = true -- handcuff addon
 Config.Enable_DoorLock = true -- doorlock addon
-
 Config.DebugEnabled = false -- debug info
 Config.clientSyncTime = 15 -- client sync time in seconds
 handcuff_config.enableInventoryHud = false -- enable inventoryhud handcuffs

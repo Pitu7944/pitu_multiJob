@@ -2,11 +2,11 @@ fx_version 'cerulean'
 games { 'gta5' }
 author 'Pitu7944#2711'
 description 'Pitu7944\'s multiJob'
-version '1.2.5'
+version '1.2.6'
 
 
 server_scripts {
-    '@es_extended/locale.lua',
+    'translations.lua',
     'Config.lua',
     'server/globals.lua',
     '@mysql-async/lib/MySQL.lua',
@@ -17,7 +17,7 @@ server_scripts {
 }
 
 client_scripts {
-    '@es_extended/locale.lua',
+    'translations.lua',
     'Config.lua',
     'client/functions.lua',
     'client/client.lua',

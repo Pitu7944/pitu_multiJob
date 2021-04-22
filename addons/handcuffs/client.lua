@@ -80,7 +80,7 @@ if Config.Enable_Handcuffs then
     if distance ~= -1 and distance <= 3.0 then
         TriggerServerEvent('pitu_multijob:addons:cuffing', GetPlayerServerId(player))
     else
-        ESX_CF.ShowNotification('No players nearby')
+        ESX_CF.ShowNotification(trs['h_notifications_no_players_nearby'])
         end
     end)
 
@@ -90,7 +90,7 @@ if Config.Enable_Handcuffs then
     if distance ~= -1 and distance <= 3.0 then
         TriggerServerEvent('pitu_multijob:addons:unlocking', GetPlayerServerId(player))
     else
-        ESX_CF.ShowNotification('No players nearby')
+        ESX_CF.ShowNotification(trs['h_notifications_no_players_nearby'])
         end
     end)
 
@@ -117,9 +117,9 @@ if Config.Enable_Handcuffs then
 
             ClearPedTasksImmediately(ped)
             TriggerServerEvent('pitu_multijob:addons:search:unhandcuff', GetPlayerServerId(player))
-            ESX_CF.ShowNotification('Handcuffs unlocked')
+            ESX_CF.ShowNotification(trs['h_notifications_unlocked'])
         else
-            ESX_CF.ShowNotification('Your are already lockpicking handcuffs')
+            ESX_CF.ShowNotification(trs['h_notifications_error1'])
         end
     end)
 
@@ -150,10 +150,6 @@ if Config.Enable_Handcuffs then
                 DisableControlAction(0, 257, true) -- Attack 2
                 DisableControlAction(0, 25, true) -- Aim
                 DisableControlAction(0, 263, true) -- Melee Attack 1
-                DisableControlAction(0, 32, true) -- W
-                DisableControlAction(0, 34, true) -- A
-                DisableControlAction(0, 31, true) -- S
-                DisableControlAction(0, 30, true) -- D
                 DisableControlAction(0, 45, true) -- Reload
                 DisableControlAction(0, 22, true) -- Jump
                 DisableControlAction(0, 44, true) -- Cover
@@ -203,12 +199,12 @@ if Config.Enable_Handcuffs then
             if f6menu_allowed then
                 if IsControlJustReleased(1,  167) then
                     local elements = {
-                        {label = 'Skuj Gracza', value = 'cuff'},
-                        {label = 'Rozkuj Gracza', value = 'uncuff'},
-                        {label = 'Przeszukaj Gracza', value = 'search'},
-                        {label = 'Przenieś Gracza', value = 'drag'},
-                        {label = 'Włóż do Pojazdu', value = 'put_in_vehicle'},
-                        {label = 'Wyjmij z Pojazdu', value = 'out_the_vehicle'},
+                        {label = trs['h_cuff_label'], value = 'cuff'},
+                        {label = trs['h_uncuff_label'], value = 'uncuff'},
+                        {label = trs['h_search_label'], value = 'search'},
+                        {label = trs['h_move_player'], value = 'drag'},
+                        {label = trs['h_put_into_vehicle'], value = 'put_in_vehicle'},
+                        {label = trs['h_take_out_of_vehicle'], value = 'out_the_vehicle'},
                     }
                     ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'pitu_multijob_gang_actions', {
                         title    = 'Akcje Gangu',
@@ -218,35 +214,34 @@ if Config.Enable_Handcuffs then
                         if data.current.value == 'cuff' then
                             local closestPlayer, closestPlayerDistance = ESX_CF.Game.GetClosestPlayer()
                             if closestPlayer == -1 or closestPlayerDistance > 3.0 then
-                                ESX.ShowNotification('Nie ma nikogo w pobliżu')
+                                ESX.ShowNotification(trs['h_notifications_no_players_nearby'])
                             else
                                 TriggerServerEvent('pitu_multijob:addons:cuffing', GetPlayerServerId(closestPlayer))
                             end
                         elseif data.current.value == 'uncuff' then
                             local closestPlayer, closestPlayerDistance = ESX_CF.Game.GetClosestPlayer()
                             if closestPlayer == -1 or closestPlayerDistance > 3.0 then
-                                ESX.ShowNotification('Nie ma nikogo w pobliżu')
+                                ESX.ShowNotification(trs['h_notifications_no_players_nearby'])
                             else
                                 TriggerServerEvent('pitu_multijob:addons:uncuff', GetPlayerServerId(closestPlayer))
                             end
                         elseif data.current.value == 'search' then
                             local closestPlayer, closestPlayerDistance = ESX_CF.Game.GetClosestPlayer()
                             if closestPlayer == -1 or closestPlayerDistance > 3.0 then
-                                ESX.ShowNotification('Nie ma nikogo w pobliżu')
+                                ESX.ShowNotification(trs['h_notifications_no_players_nearby'])
                             else
                                 ESX.TriggerServerCallback('pitu_multijob:addons:getcuffStatus', function(iscuffed)
                                     if iscuffed then
                                         print("can search")
                                         TriggerServerEvent('pitu_multijob:functions_s:notify', GetPlayerServerId(closestPlayer), 'Jesteś ~r~Przeszukiwany~w~ Przez ID: '..GetPlayerServerId(PlayerId()))
-                                        ESX.ShowNotification('~r~Przeszukujesz~w~ ID: '..GetPlayerServerId(closestPlayer))
-                                        TriggerServerEvent('pitu_mongoLogs:OpenInventory_pmjHandcuffs', GetPlayerServerId(PlayerId()), GetPlayerServerId(closestPlayer))
+                                        ESX.ShowNotification(string.format(trs['h_you_are_searching'], GetPlayerServerId(closestPlayer)))
                                         if handcuff_config.enableInventoryHud then
                                             TriggerEvent("esx_inventoryhud:openPlayerInventory", GetPlayerServerId(closestPlayer), GetPlayerName(closestPlayer))
                                         else
                                             OpenBodySearchMenu(closestPlayer)
                                         end
                                     else
-                                        ESX.ShowNotification('Nie ma nikogo ~r~Skutego~w~ w pobliżu')
+                                        ESX.ShowNotification(trs['h_notifications_no_cuffed_players_nearby'])
                                     end
                                 end, GetPlayerServerId(closestPlayer))
                                 TriggerServerEvent('pitu_multijob:addons:search', GetPlayerServerId(closestPlayer))
@@ -282,7 +277,7 @@ if Config.Enable_Handcuffs then
             for i=1, #data.accounts, 1 do
                 if data.accounts[i].name == 'black_money' and data.accounts[i].money > 0 then
                     table.insert(elements, {
-                        label    = "Brudne Pieniądze: "..ESX.Math.Round(data.accounts[i].money),
+                        label    = string.format(trs['h_search_black_money'], ESX.Math.Round(data.accounts[i].money))
                         value    = 'black_money',
                         itemType = 'item_account',
                         amount   = data.accounts[i].money
@@ -291,18 +286,18 @@ if Config.Enable_Handcuffs then
                 end
             end
 
-            table.insert(elements, {label = 'Broń'})
+            table.insert(elements, {label = trs['h_search_weapon_label']})
 
             for i=1, #data.weapons, 1 do
                 table.insert(elements, {
-                    label    =  ESX.GetWeaponLabel(data.weapons[i].name).. " | Amunicja: "..data.weapons[i].ammo,
+                    label    =  ESX.GetWeaponLabel(data.weapons[i].name).. " | "..trs['h_search_ammo_label']..": "..data.weapons[i].ammo,
                     value    = data.weapons[i].name,
                     itemType = 'item_weapon',
                     amount   = data.weapons[i].ammo
                 })
             end
 
-            table.insert(elements, {label = 'Ekwipunek'})
+            table.insert(elements, {label = trs['h_search_inventory_label']})
 
             for i=1, #data.inventory, 1 do
                 if data.inventory[i].count > 0 then
@@ -316,7 +311,7 @@ if Config.Enable_Handcuffs then
             end
 
             ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'body_search', {
-                title    = 'Przeszukiwanie',
+                title    = trs['h_search_label_dialog'],
                 align    = 'top-left',
                 elements = elements
             }, function(data, menu)
@@ -334,9 +329,7 @@ if Config.Enable_Handcuffs then
 
     RegisterNetEvent('pitu_multijob:addons:drag')
     AddEventHandler('pitu_multijob:addons:drag', function(copId)
-        print("yoooos")
         if cuffed then
-            print("dragging")
             dragStatus.isDragged = not dragStatus.isDragged
             dragStatus.CopId = copId
         end
