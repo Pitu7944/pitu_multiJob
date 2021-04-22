@@ -7,9 +7,6 @@
   <a href="https://github.com/Pitu7944/pitu_multiJob/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
-  <a href="#" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/github/license/Pitu7944\#2711/pitu_multiJob" />
-  </a>
 </p>
 
 > FiveM esx addon for adding second job, gang/mafia/etc...
