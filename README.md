@@ -11,6 +11,10 @@
 
 > FiveM esx addon for adding second job, gang/mafia/etc...
 
+## Looking for help adding Translation Support!
+
+> if you are interested please dm me on Discord!
+
 ## Installation
 <b>Dependencies</b>
 ```
