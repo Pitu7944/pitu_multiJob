@@ -277,7 +277,7 @@ if Config.Enable_Handcuffs then
             for i=1, #data.accounts, 1 do
                 if data.accounts[i].name == 'black_money' and data.accounts[i].money > 0 then
                     table.insert(elements, {
-                        label    = string.format(trs['h_search_black_money'], ESX.Math.Round(data.accounts[i].money))
+                        label    = string.format(trs['h_search_black_money'], ESX.Math.Round(data.accounts[i].money)),
                         value    = 'black_money',
                         itemType = 'item_account',
                         amount   = data.accounts[i].money
